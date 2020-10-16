@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<!-- saved from url=(0071)file:///C:/Users/Training/Desktop/Assignment_3(JQuery)/view/task3.html# -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+ 
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Employee Monitoring System</title>
+ <script src="./Employee Monitoring System_files/empdata.js.download"></script>
+ <script src="./Employee Monitoring System_files/jquery.js.download"></script>
+ 
+ <script>
+    let mgr = new empManager();
+    function init(){
+    $("#div1").hide()
+     $("#div2").hide()
+     $("#div3").hide() 
+     mgr.addEmployee(new employee(101,"Thrinath","Hyderabad"))
+     mgr.addEmployee(new employee(102,"Rajat","Baroda"))
+     mgr.addEmployee(new  employee(103,"Panini","Madhurai"))
+ }
+ 
+ function onAddClick()
+ {
+    $("#div1").hide()
+     $("#div2").hide()
+     $("#div3").show()   
+ }
+
+ function onAddEmployee(){
+    
+    let id=$("#newId").val();
+    let name=$("#newName").val();
+    let address=$("#newAddress").val();
+    let emp=new employee(id,name,address)
+    mgr.addEmployee(emp)
+   $("#newId").val("")
+    $("#newName").val("")
+    $("#newAddress").val("")
+    alert("Employee added successfully");
+ }
+ function updateRecord(){
+    let id = $("#empId").text();
+            let name = $("#empName").val();
+            let address = $("#empAddress").val();
+            let emp = new employee(id, name, address)
+            try {
+                mgr.updateEmployee(emp);
+                alert("Employee updated!!!!");                
+            } catch (error) {
+                alert(error.message);
+            }            
+ }
+ function fillRecords(){
+    $("#div1").hide()
+     $("#div2").hide()
+     $("#div3").hide()
+     let heading=`<tr><th>Emp ID</th><th>Emp Name</th><th>Emp Address</th><th>Options</th>`;
+      $("#tblRecords").html(heading);
+        $("#div1").show()
+        let data=mgr.getAll()
+        data.forEach(emp => {
+           let row = `<tr><td>${emp.empId}</td><td>${emp.empName}</td><td>${emp.empAddress}</td><td><button class="edit" sid="${emp.empId}">Edit</button>   <button class="del" sid="${emp.empId}">X</button></td>`;
+            document.getElementById("tblRecords").innerHTML+=row; 
+            $(".edit").click(function () {
+               var selectedId= $(this).attr("sid");
+               let empObj = mgr.findEmployee(selectedId);
+                    $("#empId").text(empObj.empId);
+                    $("#empName").val(empObj.empName);
+                    $("#empAddress").val(empObj.empAddress);
+                    $("#div1").hide()
+                    $("#div2").show()
+                    $("#div3").hide()
+               });
+               $(".del").click(function () {
+               var selectedId= $(this).attr("sid");
+               if(confirm("please confirm deletion of record"))
+                   {
+                       mgr.deleteEmployee(selectedId); 
+                       fillRecords();
+                   }
+                   else
+                   {
+                    $("#div1").hide()
+                    $("#div2").hide()
+                    $("#div3").hide()
+                   }
+               });
+            
+        })
+        
+    }
+  $(document).ready(init);
+</script>
+</head>
+<body>
+ <header>
+ <nav>
+    <a href="file:///C:/Users/Training/Desktop/Assignment_3(JQuery)/view/task3.html#" onclick="fillRecords()">View All</a>
+    <a href="file:///C:/Users/Training/Desktop/Assignment_3(JQuery)/view/task3.html#" onclick="onAddClick()">New Employee</a>
+    <a href="file:///C:/Users/Training/Desktop/Assignment_3(JQuery)/view/task3.html#" onclick="">About Us</a>
+ </nav>
+ </header>
+ <section>
+ <div id="div1" style="">
+ <h2>List of Employees with Us!!!!</h2>
+ <table id="tblRecords" border="1" width="35%"><tbody><tr><th>Emp ID</th><th>Emp Name</th><th>Emp Address</th><th>Options</th></tr><tr><td>103</td><td>Sandeep</td><td>Madhurai</td><td><button class="edit" sid="103">Edit</button>   <button class="del" sid="103">X</button></td></tr></tbody><tbody><tr><td>1213</td><td>Thrinath</td><td>Hyderabad</td><td><button class="edit" sid="1213">Edit</button>   <button class="del" sid="1213">X</button></td></tr></tbody><tbody><tr><td>124</td><td>Rajat</td><td>Bangalore</td><td><button class="edit" sid="124">Edit</button>   <button class="del" sid="124">X</button></td></tr></tbody></table>
+ </div>
+ <div id="div2" style="display: none;">
+ <h2>Edit the Details of the Employee</h2>
+ <p>Employee ID: <span id="empId"></span> </p>
+ <p>Employee Name: <input type="text" id="empName"></p> 
+ <p>Employee Address: <input type="text" id="empAddress"></p>
+ <p><button onclick="updateRecord()">Update Record</button></p> 
+ </div>
+ <div id="div3" style="display: none;">
+ <h2>Add the Details of the Employee</h2>
+ <p>Employee ID: <input type="number" id="newId"> </p>
+ <p>Employee Name: <input type="text" id="newName"></p>
+ <p>Employee Address: <input type="text" id="newAddress"></p>
+ <p><button onclick="onAddEmployee()">Add Employee</button></p>
+ </div> 
+ </section>
+ 
+
+</body></html>
